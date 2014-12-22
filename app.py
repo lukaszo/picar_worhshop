@@ -1,21 +1,25 @@
-#!./uwsgi --https :8443,foobar.crt,foobar.key --http-raw-body --gevent 100 --module tests.websockets_echo
+# -*- coding: UTF-8 -*-
 import time
 
+from flask import Flask, render_template
 from flask.ext.uwsgi_websocket import WebSocket
 
 import car
 import fpv
-
-from flask import Flask, render_template
 
 
 app = Flask(__name__)
 ws = WebSocket(app)
 
 
-CAR = car.Car(15,14,23,24,18)
-FPV = fpv.FPV(horizontal_pin=27,
-              vertical_pin=23)
+CAR = car.Car(left_pin=23,
+              right_pin=24,
+              forward_pin=14,
+              backward_pin=15,
+              enable_moving=18,
+              enable_turning=25)
+FPV = fpv.FPV(horizontal_pin=8,
+              vertical_pin=7)
 
 
 def car_module(msg):
