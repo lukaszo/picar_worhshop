@@ -40,7 +40,7 @@ class Car(object):
         GPIO.output(self._right_pin, True)
 
     def straight(self):
-        GPIO.output(self._enable_turning, True)
+        GPIO.output(self._enable_turning, False)
         GPIO.output(self._left_pin, False)
         GPIO.output(self._right_pin, False)
 
