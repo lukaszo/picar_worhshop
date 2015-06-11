@@ -1,4 +1,5 @@
-import RPi.GPIO as GPIO
+# -*- coding: UTF-8 -*-
+import pigpio
 
 
 class Car(object):
@@ -18,40 +19,40 @@ class Car(object):
 
 
     def _setup_gpio(self):
-        GPIO.setmode(GPIO.BCM)
+        self._pi =  pigpio.pi()
 
-        GPIO.setup(self._left_pin, GPIO.OUT)
-        GPIO.setup(self._right_pin, GPIO.OUT)
-        GPIO.setup(self._forward_pin, GPIO.OUT)
-        GPIO.setup(self._backward_pin, GPIO.OUT)
-        GPIO.setup(self._enable_moving, GPIO.OUT)
-        GPIO.setup(self._enable_turning, GPIO.OUT)
+        self._pi.set_mode(self._left_pin, pigpio.OUTPUT)
+        self._pi.set_mode(self._right_pin, pigpio.OUTPUT)
+        self._pi.set_mode(self._forward_pin, pigpio.OUTPUT)
+        self._pi.set_mode(self._backward_pin, pigpio.OUTPUT)
+        self._pi.set_mode(self._enable_moving, pigpio.OUTPUT)
+        self._pi.set_mode(self._enable_turning, pigpio.OUTPUT)
 
-        self._moving_pwm = GPIO.PWM(self._enable_moving, 100) # channel, frequency
+        self._pi.set_PWM_frequency(self._enable_moving, 100) # channel, frequency
 
     def turn_left(self):
-        GPIO.output(self._enable_turning, True)
-        GPIO.output(self._right_pin, False)
-        GPIO.output(self._left_pin, True)
+        self._pi.write(self._enable_turning, True)
+        self._pi.write(self._right_pin, False)
+        self._pi.write(self._left_pin, True)
 
     def turn_right(self):
-        GPIO.output(self._enable_turning, True)
-        GPIO.output(self._left_pin, False)
-        GPIO.output(self._right_pin, True)
+        self._pi.write(self._enable_turning, True)
+        self._pi.write(self._left_pin, False)
+        self._pi.write(self._right_pin, True)
 
     def straight(self):
-        GPIO.output(self._enable_turning, False)
-        GPIO.output(self._left_pin, False)
-        GPIO.output(self._right_pin, False)
+        self._pi.write(self._left_pin, False)
+        self._pi.write(self._right_pin, False)
+        self._pi.write(self._enable_turning, False)
 
     def move_forward(self):
-        GPIO.output(self._backward_pin, False)
-        GPIO.output(self._forward_pin, True)
+        self._pi.write(self._backward_pin, False)
+        self._pi.write(self._forward_pin, True)
         self._start_moving_pwm()
 
     def move_backward(self):
-        GPIO.output(self._forward_pin, False)
-        GPIO.output(self._backward_pin, True)
+        self._pi.write(self._forward_pin, False)
+        self._pi.write(self._backward_pin, True)
         self._start_moving_pwm()
 
     def faster(self, change_value=15):
@@ -69,25 +70,22 @@ class Car(object):
         self._change_power()
 
     def stop_moving(self):
-        self._moving_pwm.stop()
-        GPIO.output(self._backward_pin, False)
-        GPIO.output(self._forward_pin, False)
+        self._pi.set_PWM_dutycycle(self._enable_turning, 0)
+        self._pi.write(self._backward_pin, False)
+        self._pi.write(self._forward_pin, False)
         self._moving_pwm_started = False
 
     def stop(self):
-        self._moving_pwm.stop()
-        GPIO.output(self._left_pin, False)
-        GPIO.output(self._right_pin, False)
-        GPIO.output(self._backward_pin, False)
-        GPIO.output(self._forward_pin, False)
-        GPIO.output(self._enable_turning, False)
-        self._moving_pwm_started = False
+        self.stop_moving()
+        self._pi.write(self._left_pin, False)
+        self._pi.write(self._right_pin, False)
+        self._pi.write(self._enable_turning, False)
 
     def _start_moving_pwm(self):
         if self._moving_pwm_started:
             return
-        self._moving_pwm.start(self._power)
+        self._pi.set_PWM_dutycycle(self._enable_moving, self._power)
         self._moving_pwm_started = True
 
     def _change_power(self):
-        self._moving_pwm.ChangeDutyCycle(self._power)
+        self._pi.set_PWM_dutycycle(self._enable_moving, self._power)

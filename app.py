@@ -12,10 +12,10 @@ app = Flask(__name__)
 ws = WebSocket(app)
 
 
-CAR = car.Car(left_pin=23,
-              right_pin=24,
-              forward_pin=14,
-              backward_pin=15,
+CAR = car.Car(left_pin=24,
+              right_pin=23,
+              forward_pin=15,
+              backward_pin=14,
               enable_moving=18,
               enable_turning=25)
 FPV = fpv.FPV(horizontal_pin=8,
