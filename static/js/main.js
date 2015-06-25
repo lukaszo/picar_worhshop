@@ -1,158 +1,215 @@
-(function() {
+"use strict";
 
-  var log = function(msg) {
-    console.log(msg);
-    var bb = document.getElementById('blackboard')
-    var html = bb.innerHTML;
-    bb.innerHTML = msg + '<br/>' + html;
-  }
+var DEBUG = true;
 
-  var s = new WebSocket("ws://" + document.location.host + "/control-panel");
-    s.onopen = function() {
-  };
+function log(msg) {
+  var bb = document.getElementById('blackboard')
+  var html = bb.innerHTML;
+  bb.innerHTML = msg + '<br/>' + html;
+}
 
-  s.onmessage = function(e) {
+function bindEvents(socket) {
+  socket.addEventListener('open', function() {
+
+  });
+
+  socket.addEventListener('message', function(e) {
     var bb = document.getElementById('blackboard')
     var html = bb.innerHTML;
     bb.innerHTML = html + '<br/>' + e.data;
-  };
+  });
 
-  s.onerror = function(e) {
+  socket.addEventListener('error', function(e) {
     alert(e);
-  }
-    
-  s.onclose = function(e) {
-  }
-            
-  function invia() {
-    var value = document.getElementById('testo').value;
-    s.send(value);
+  });
+
+  socket.addEventListener('close', function(e) {
+
+  });
+}
+
+function invia(socket) {
+  var value = document.getElementById('testo').value;
+  socket.send(value);
+}
+
+function onDOMReady() {
+  var ws = new WebSocket("ws://" + document.location.host + "/control-panel");
+
+  bindEvents(ws);
+
+  function doRequest(msg) {
+    ws.send(msg);
+    log(msg);
   }
 
   var listener = new window.keypress.Listener();
-  var my_scope = this;
-  var my_combos = listener.register_many([
-      {
-        "keys"           : "up",
-        "is_exclusive"   : true,
-        "prevent_repeat" : "true",
-        "on_keydown"     : function() {
-            msg = "car forward";
-            s.send(msg)
-            log(msg);
-        },
-        "on_keyup"       : function(e) {
-            msg = "car stop_moving";
-            s.send(msg)
-            log(msg);
-        },
-        "this"           : my_scope
+  var self = this;
+  var myCombos = listener.register_many([{
+    "keys": "up",
+    "is_exclusive": true,
+    "prevent_repeat": "true",
+    "on_keydown": function() {
+      var msg = "car forward";
+      doRequest(msg);
+    },
+    "on_keyup": function(e) {
+      var msg = "car stop_moving";
+      doRequest(msg);
+    },
+    "this": self
+  }, {
+    "keys": "down",
+    "is_exclusive": true,
+    "prevent_repeat": "true",
+    "on_keydown": function() {
+      var msg = "car backward";
+      doRequest(msg);
+    },
+    "on_keyup": function(e) {
+      var msg = "car stop_moving";
+      doRequest(msg);
+    },
+    "this": self
+  }, {
+    "keys": "left",
+    "is_exclusive": true,
+    "prevent_repeat": "true",
+    "on_keydown": function() {
+      var msg = "car left";
+      doRequest(msg);
+    },
+    "on_keyup": function(e) {
+      var msg = "car straight";
+      doRequest(msg);
+    },
+    "this": self
+  }, {
+    "keys": "right",
+    "is_exclusive": true,
+    "prevent_repeat": "true",
+    "on_keydown": function() {
+      var msg = "car right";
+      doRequest(msg);
+    },
+    "on_keyup": function(e) {
+      var msg = "car straight";
+      doRequest(msg);
+    },
+    "this": self
+  }, {
+    "keys": "space",
+    "is_exclusive": true,
+    "prevent_repeat": "true",
+    "on_keydown": function() {
+      var msg = "stop";
+      doRequest(msg);
+    },
+    "this": self
+  }, {
+    "keys": "x",
+    "is_exclusive": true,
+    "prevent_repeat": "true",
+    "on_keydown": function() {
+      var msg = "car slower";
+      doRequest(msg);
+    },
+    "this": self
+  }, {
+    "keys": "z",
+    "is_exclusive": true,
+    "prevent_repeat": "true",
+    "on_keydown": function() {
+      var msg = "car faster";
+      doRequest(msg);
+    },
+    "this": self
+  }]);
+
+  // var verticalSlider = new Slider("#vertical");
+  // var hortizontalSlider = new Slider("#horizontal");
+
+  // verticalSlider.on("change", function(values) {
+  //   var msg = "fpv vertical_angle " + values.newValue;
+  //   doRequest(msg);
+  // });
+
+  // hortizontalSlider.on("change", function(values) {
+  //   var msg = "fpv horizontal_angle " + values.newValue;
+  //   doRequest(msg);
+  // });
+
+  var canvas = document.getElementById('car-control');
+  //   GameController.init({
+  //     // canvas: canvas,
+  //     forcePerformanceFriendly: true,
+
+  //     left: {
+  //         type: 'joystick'
+  //     },
+  //     right: {
+  //         position: {
+  //             right: '5%'
+  //         },
+  //         type: 'buttons',
+  //         buttons: [
+  //         {
+  //             label: 'jump', fontSize: 13, touchStart: function() {
+  //                 // do something
+  //             }
+  //         },
+  //         false, false, false
+  //         ]
+  //     }
+  // } );
+  GameController.init({
+    forcePerformanceFriendly: true,
+    right: {
+      type: 'joystick',
+      position: {
+        // left: '15%',
+        // bottom: '15%'
       },
-      {
-        "keys"           : "down",
-        "is_exclusive"   : true,
-        "prevent_repeat" : "true",
-        "on_keydown"     : function() {
-            msg = "car backward";
-            s.send(msg)
-            log(msg);
+      joystick: {
+        touchStart: function() {
+          console.log('touch starts');
         },
-        "on_keyup"       : function(e) {
-            msg = "car stop_moving";
-            s.send(msg)
-            log(msg);
+        touchEnd: function() {
+          console.log('touch ends');
         },
-        "this"           : my_scope
-      },
-      {
-        "keys"           : "left",
-        "is_exclusive"   : true,
-        "prevent_repeat" : "true",
-        "on_keydown"     : function() {
-            msg = "car left";
-            s.send(msg)
-            log(msg);
-        },
-        "on_keyup"       : function(e) {
-            msg = "car straight";
-            s.send(msg)
-            log(msg);
-        },
-        "this"           : my_scope
-      },
-      {
-        "keys"           : "right",
-        "is_exclusive"   : true,
-        "prevent_repeat" : "true",
-        "on_keydown"     : function() {
-            msg = "car right";
-            s.send(msg)
-            log(msg);
-        },
-        "on_keyup"       : function(e) {
-            msg = "car straight";
-            s.send(msg)
-            log(msg);
-        },
-        "this"           : my_scope
-      },
-      {
-        "keys"           : "space",
-        "is_exclusive"   : true,
-        "prevent_repeat" : "true",
-        "on_keydown"     : function() {
-            msg = "stop";
-            s.send(msg)
-            log(msg);
-        },
-        "this"           : my_scope
-      },
-      {
-        "keys"           : "x",
-        "is_exclusive"   : true,
-        "prevent_repeat" : "true",
-        "on_keydown"     : function() {
-            msg = "car slower";
-            s.send(msg)
-            log(msg);
-        },
-        "this"           : my_scope
-      },
-      {
-        "keys"           : "z",
-        "is_exclusive"   : true,
-        "prevent_repeat" : "true",
-        "on_keydown"     : function() {
-            msg = "car faster";
-            s.send(msg)
-            log(msg);
-        },
-        "this"           : my_scope
+        touchMove: function(details) {
+          console.log(details);
+          var verticalCamera = "fpv vertical_angle " + Math.round(details.dy + 82.5);
+          var horizontalCamera = "fpv horizontal_angle " + Math.round(details.dx + 82.5);
+          doRequest(verticalCamera);
+          doRequest(horizontalCamera);
+        }
       }
-  ]);
-
-  var vertical_slider = new Slider("#vertical");
-  var horizontal_slider = new Slider("#horizontal");
-  
-  vertical_slider.on("change", function(values) {
-    msg = "fpv vertical_angle " + values.newValue;
-    s.send(msg)
-    log(msg);
+    },
+    left: {
+      type: 'joystick'
+    }
   });
-
-  horizontal_slider.on("change", function(values) {
-    msg = "fpv horizontal_angle " + values.newValue;
-    s.send(msg)
-    log(msg);
+  var ctx = canvas.getContext('2d');
+  var img = new Image();
+  img.addEventListener('load', function() {
+    ctx.drawImage(img, 0, 0);
   });
+  // if (DEBUG) {
+  setInterval(function() {
+    // console.log('wat');
+    // img.src = 'http://' + window.location.hostname + "/cam_pic.php?time=" + new Date().getTime();
+    img.src = 'http://lorempixel.com/400/200/?' + new Date().getTime();
+    // img.src = 'http://' + window.location.hostname + "/cam_pic.php?time=" + new Date().getTime();
+  }, 1000);
+  // }
 
-  mjpeg_img = document.getElementById("mjpeg_dest");  
-  function reload_img () {
-    mjpeg_img.src = 'http://' + window.location.hostname + "/cam_pic.php?time=" + new Date().getTime();
-  }
-  setInterval(reload_img, 100);
+  window.onbeforeunload = function() {
+    ws.onclose = function() {}; // disable onclose handler first
+    ws.close();
+  };
+}
 
-}).call(this);
-
-
-
+document.addEventListener('DOMContentLoaded', function() {
+  onDOMReady();
+});

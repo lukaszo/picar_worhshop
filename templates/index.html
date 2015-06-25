@@ -27,40 +27,38 @@
 
     <div class="container">
 
-      <div class="blog-header">
-        <h1 class="blog-title">HS Car</h1>
-      </div>
+        <div class="blog-header">
+          <h1 class="blog-title">HS Car</h1>
+        </div>
 
-      <div class="row">
+        <div class="row">
 
-        <div class="col-sm-8 blog-main">
+          <div class="col-sm-8 blog-main">
+          
 
-          <div class="blog-post">
-            <img id="mjpeg_dest">
-            <input id="vertical" type="text" data-slider-min="0" data-slider-max="180" data-slider-step="10" data-slider-value="90" data-slider-orientation="vertical"/>
-            <input id="horizontal" type="text" data-slider-min="0" data-slider-max="180" data-slider-step="10" data-slider-value="90"/>
-          </div>  
+          <canvas width="500" height="500" id="car-control"></canvas> 
+          </div><!-- /.blog-main -->
 
-        </div><!-- /.blog-main -->
+          <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+            <div class="sidebar-module sidebar-module-inset">
+              <h4>Debug</h4>
+                <div id="blackboard" style="height:256px;background-color:black;color:white;border: solid 1px red;overflow:auto">
+            </div>
+            <div class="sidebar-module">
+            </div>
+          </div><!-- /.blog-sidebar -->
 
-        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
-          <div class="sidebar-module sidebar-module-inset">
-            <h4>Debug</h4>
-              <div id="blackboard" style="height:256px;background-color:black;color:white;border: solid 1px red;overflow:auto">
-          </div>
-          <div class="sidebar-module">
-          </div>
-        </div><!-- /.blog-sidebar -->
+        </div><!-- /.row -->
 
-      </div><!-- /.row -->
-
-    </div><!-- /.container -->
+      </div><!-- /.container -->
+    </div>
 
     <footer class="blog-footer">
     <p>Created for <a href="http://hs-silesia.pl">Hackerspace Silesia</a> by <a href="https://twitter.com/lukas_oles">Łukasz Oleś</a></p>
     </footer>
-    <script src="/static/js/keypress-2.1.0.min.js"></script>
-    <script src="/static/js/bootstrap-slider.js"></script>
+    <script src="/static/js/vendor/keypress-2.1.0.min.js"></script>
+    <script src="/static/js/vendor/bootstrap-slider.js"></script>
+    <script src="/static/js/vendor/gamecontroller.js"></script>
     <script src="/static/js/main.js"></script>
   </body>
 </html>
