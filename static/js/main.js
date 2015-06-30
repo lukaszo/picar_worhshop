@@ -140,8 +140,20 @@
     log(msg);
   });
 
+  vertical_slider.on("slideStop", function(values) {
+    msg = "fpv stop";
+    s.send(msg)
+    log(msg);
+  });
+
   horizontal_slider.on("change", function(values) {
     msg = "fpv horizontal_angle " + values.newValue;
+    s.send(msg)
+    log(msg);
+  });
+
+  horizontal_slider.on("slideStop", function(values) {
+    msg = "fpv stop";
     s.send(msg)
     log(msg);
   });
