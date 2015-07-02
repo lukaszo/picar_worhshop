@@ -1,5 +1,8 @@
 # -*- coding: UTF-8 -*-
-import pigpio
+from config import MOCK
+if not MOCK:
+  import pigpio
+  
 
 
 class Car(object):

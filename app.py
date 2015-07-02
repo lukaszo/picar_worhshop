@@ -4,6 +4,7 @@ import time
 from flask import Flask, render_template
 from flask.ext.uwsgi_websocket import WebSocket
 
+from config import MOCK
 import car
 import fpv
 
@@ -12,14 +13,16 @@ app = Flask(__name__)
 ws = WebSocket(app)
 
 
-CAR = car.Car(left_pin=24,
-              right_pin=23,
-              forward_pin=15,
-              backward_pin=14,
-              enable_moving=18,
-              enable_turning=25)
-FPV = fpv.FPV(horizontal_pin=8,
-              vertical_pin=7)
+if not MOCK:
+  CAR = car.Car(left_pin=24,
+                right_pin=23,
+                forward_pin=15,
+                backward_pin=14,
+                enable_moving=18,
+                enable_turning=25)
+  FPV = fpv.FPV(horizontal_pin=8,
+                vertical_pin=7) 
+
 
 
 def car_module(msg):
@@ -58,10 +61,13 @@ def fpv_module(msg):
     else:
         raise Exception('Unknown message {0}'.format(msg))
 
+if (MOCK):
+  MODULES = {}
+else:
+  MODULES = {'car' : car_module,
+             'fpv' : fpv_module,
+            }
 
-MODULES = {'car' : car_module,
-           'fpv' : fpv_module,
-          }
 
 
 @app.route('/')
