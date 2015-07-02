@@ -14,10 +14,12 @@
     var self = this;
     self.blackboard = document.getElementById('blackboard');
     self.ws = new WebSocket("ws://" + document.location.host + "/control-panel");
-    self.ws.addEventListener('message', function(e) {
-      var html = self.blackboard.innerHTML;
-      self.blackboard.innerHTML = html + '<br/>' + e.data;
-    });
+    if (DEBUG) {
+      self.ws.addEventListener('message', function(e) {
+        var html = self.blackboard.innerHTML;
+        self.blackboard.innerHTML = html + '<br/>' + e.data;
+      });
+    }
     self.axis = {
       // LX - Left X.
       // LY - Left Y.
@@ -75,7 +77,9 @@
 
   Car.prototype.send = function(command) {
     this.ws.send(command);
-    this.log(command);
+    if (DEBUG) {
+      this.log(command);
+    }
   };
 
   Car.prototype.controlLXAxis = function(axis) {
@@ -105,32 +109,41 @@
     }
   };
   Car.prototype.controlRXAxis = function(axis) {
-    
+    var horizontalAngle = Math.floor(90 + (axis * 90));
+    if (this.axis.RS !== horizontalAngle) {
+      this.axis.RS = horizontalAngle;
+      this.cameraHorizontal(horizontalAngle);
+    }
   };
 
   Car.prototype.controlRYAxis = function(axis) {
-    var RYAxis = Math.floor(axis);
-    if (RYAxis > AXIS_DEADZONE && this.axis.RY !== 1) {
-      this.axis.RY = 1;
-      this.backward();
-    } else if (RYAxis < -AXIS_DEADZONE && this.axis.RY !== -1) {
-      this.axis.RY = -1;
-      this.forward();
-    } else if (RYAxis === 0 && this.axis.RY !== 0) {
-      this.axis.RY = 0;
-      this.stop();
+    var verticalAngle = Math.floor(90 + (axis * 90));
+    if (this.axis.RY !== verticalAngle) {
+      this.axis.RY = verticalAngle;
+      this.cameraVertical(verticalAngle);
+    }
+  };
+
+  // FIXME
+  Car.prototype.totalStop = function(button) {
+    if (button.pressed || button.value === 1) {
+      this.halt();
     }
   };
 
   Car.prototype.controls = function(gamepad) {
-      // 0 - left/right left axis
-      // 1 - top/bottom left axis
-      // 2 - left/right right axis
-      // 3 - top/bottom right/axis
-      this.controlLXAxis(gamepad.axes[0]);
-      this.controlLYAxis(gamepad.axes[1]);
-      this.controlRXAxis(this.gamepad.axes[2]);
-      this.controlRYAxis(this.gamepad.axes[3]);
+    // axes[0] - left/right left axis
+    // axes[1] - top/bottom left axis
+    // axes[2] - left/right right axis
+    // axes[3] - top/bottom right/axis
+    // buttons[4] - Left '1'/bumper
+    // buttons[5] -Right '1'/bumper
+    this.controlLXAxis(gamepad.axes[0]);
+    this.controlLYAxis(gamepad.axes[1]);
+    this.controlRXAxis(gamepad.axes[2]);
+    this.controlRYAxis(gamepad.axes[3]);
+    this.totalStop(gamepad.buttons[4]);
+    this.totalStop(gamepad.buttons[5]);
   };
 
   function onDOMReady() {
