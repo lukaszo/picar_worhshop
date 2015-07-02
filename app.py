@@ -12,6 +12,16 @@ app = Flask(__name__)
 ws = WebSocket(app)
 
 
+CAR = car.Car(left_pin=24,
+              right_pin=23,
+              forward_pin=15,
+              backward_pin=14,
+              enable_moving=18,
+              enable_turning=25)
+FPV = fpv.FPV(horizontal_pin=8,
+              vertical_pin=7)
+
+
 def car_module(msg):
     if msg == 'forward':
         CAR.move_forward()
@@ -49,7 +59,8 @@ def fpv_module(msg):
         raise Exception('Unknown message {0}'.format(msg))
 
 
-MODULES = {
+MODULES = {'car' : car_module,
+           'fpv' : fpv_module,
           }
 
 
