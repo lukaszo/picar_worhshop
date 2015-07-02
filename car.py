@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-import pigpio
+# import pigpio
 
 
 class Car(object):
