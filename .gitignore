@@ -52,5 +52,12 @@ docs/_build/
 
 # PyBuilder
 target/
+
 .vagrant
 Vagrantfile
+
+# vim swap files
+*.swp
+
+# db file
+*.db

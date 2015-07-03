@@ -4,25 +4,30 @@ import time
 from flask import Flask, render_template
 from flask.ext.uwsgi_websocket import WebSocket
 
-from config import MOCK
-import car
-import fpv
+from ext import Platform
+
+# Make it possible to run it on non Pi computers
+if Platform.pi_version() is None:
+    import sys
+    module = __import__('picar.ext.pigpio_dummy')
+    sys.modules['pigpio'] = module.ext.pigpio_dummy
+
+from picar import car
+from picar import fpv
 
 
 app = Flask(__name__)
 ws = WebSocket(app)
 
 
-if not MOCK:
-  CAR = car.Car(left_pin=24,
-                right_pin=23,
-                forward_pin=15,
-                backward_pin=14,
-                enable_moving=18,
-                enable_turning=25)
-  FPV = fpv.FPV(horizontal_pin=8,
-                vertical_pin=7) 
-
+CAR = car.Car(left_pin=24,
+              right_pin=23,
+              forward_pin=15,
+              backward_pin=14,
+              enable_moving=18,
+              enable_turning=25)
+FPV = fpv.FPV(horizontal_pin=8,
+              vertical_pin=7)
 
 
 def car_module(msg):
@@ -61,13 +66,10 @@ def fpv_module(msg):
     else:
         raise Exception('Unknown message {0}'.format(msg))
 
-if (MOCK):
-  MODULES = {}
-else:
-  MODULES = {'car' : car_module,
-             'fpv' : fpv_module,
-            }
 
+MODULES = {'car' : car_module,
+           'fpv' : fpv_module,
+          }
 
 
 @app.route('/')
@@ -92,10 +94,3 @@ def control_panel(ws):
                     module('stop')
             else:
                 ws.send("[%s] Unknown message: %s" % (time.time(), msg))
-
-
-application = app
-
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080, master=True, processes=1)
