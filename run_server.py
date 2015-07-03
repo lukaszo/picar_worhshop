@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+
 from picar import app
+
+
+application = app
 
 
 if __name__ == '__main__':
