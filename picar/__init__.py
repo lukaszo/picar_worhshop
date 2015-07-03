@@ -4,6 +4,14 @@ import time
 from flask import Flask, render_template
 from flask.ext.uwsgi_websocket import WebSocket
 
+from ext import Platform
+
+# Make it possible to run it on non Pi computers
+if Platform.pi_version() is None:
+    import sys
+    module = __import__('picar.ext.pigpio_dummy')
+    sys.modules['pigpio'] = module.ext.pigpio_dummy
+
 from picar import car
 from picar import fpv
 
