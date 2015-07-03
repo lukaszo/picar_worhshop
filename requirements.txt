@@ -1,0 +1,4 @@
+uwsgi
+flask
+flask-uwsgi-websocket
+http://abyz.co.uk/rpi/pigpio/pigpio.zip

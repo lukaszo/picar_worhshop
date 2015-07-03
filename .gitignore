@@ -54,3 +54,9 @@ docs/_build/
 target/
 .vagrant
 Vagrantfile
+
+# vim swap files
+*.swp
+
+# db file
+*.db
