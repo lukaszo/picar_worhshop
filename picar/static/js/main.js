@@ -20,36 +20,9 @@
         self.blackboard.innerHTML = html + '<br/>' + e.data;
       });
     }
-    self.state = {
-      // LX - Left X.
-      // LY - Left Y.
-      // RX - Right X.
-      // RY - Right Y.
-      LX: AXIS_DEFAULT,
-      LY: AXIS_DEFAULT,
-      RX: AXIS_DEFAULT,
-      RY: AXIS_DEFAULT,
-      LBumper: {
-        pushed: false,
-        value: 0
-      },
-      RBumper: {
-        pushed: false,
-        value: 0
-      },
-      LTrigger: {
-        pushed: false,
-        value: 0
-      },
-      RTrigger: {
-        pushed: false,
-        value: 0
-      }
-    };
   }
 
   Car.prototype.forward = function() {
-    console.log(this);
     this.send('car forward');
   };
   Car.prototype.backward = function() {
@@ -98,60 +71,92 @@
     }
   };
 
+
+  function Pad(car) {
+    this.car = car;
+    self.state = {
+      // LX - Left X.
+      // LY - Left Y.
+      // RX - Right X.
+      // RY - Right Y.
+      LX: AXIS_DEFAULT,
+      LY: AXIS_DEFAULT,
+      RX: AXIS_DEFAULT,
+      RY: AXIS_DEFAULT,
+      LBumper: {
+        pushed: false,
+        value: 0
+      },
+      RBumper: {
+        pushed: false,
+        value: 0
+      },
+      LTrigger: {
+        pushed: false,
+        value: 0
+      },
+      RTrigger: {
+        pushed: false,
+        value: 0
+      }
+    };
+  }
+
   // Left/right movement
-  Car.prototype.controlLXAxis = function(axis) {
+  Pad.prototype.controlLXAxis = function(axis) {
     var LXAxis = Math.floor(axis);
     if (LXAxis > AXIS_DEADZONE && this.state.LX !== 1) {
       this.state.LX = 1;
-      this.right();
+      this.car.right();
     } else if (LXAxis < -AXIS_DEADZONE && this.state.LX !== -1) {
       this.state.LX = -1;
-      this.left();
+      this.car.left();
     } else if (LXAxis === 0 && this.state.LX !== 0) {
       this.state.LX = 0;
-      this.straight();
+      this.car.straight();
     }
   };
 
+
   // Forward/backward movement
-  Car.prototype.controlLYAxis = function(axis) {
+  Pad.prototype.controlLYAxis = function(axis) {
     var LYAxis = Math.floor(axis);
     if (LYAxis > AXIS_DEADZONE && this.state.LY !== 1) {
       this.state.LY = 1;
-      this.backward();
+      this.car.backward();
     } else if (LYAxis < -AXIS_DEADZONE && this.state.LY !== -1) {
       this.state.LY = -1;
-      this.forward();
+      this.car.forward();
     } else if (LYAxis === 0 && this.state.LY !== 0) {
       this.state.LY = 0;
-      this.stop();
+      this.car.stop();
     }
   };
 
   // Camera horizontal
-  Car.prototype.controlRXAxis = function(axis) {
+  Pad.prototype.controlRXAxis = function(axis) {
     var horizontalAngle = Math.floor(90 + (axis * 90));
     if (this.state.RS !== horizontalAngle) {
       this.state.RS = horizontalAngle;
-      this.cameraHorizontal(horizontalAngle);
+      this.car.cameraHorizontal(horizontalAngle);
     }
   };
 
   // Camera vertical
-  Car.prototype.controlRYAxis = function(axis) {
+  Pad.prototype.controlRYAxis = function(axis) {
     var verticalAngle = Math.floor(90 + (axis * 90));
     if (this.state.RY !== verticalAngle) {
       this.state.RY = verticalAngle;
-      this.cameraVertical(verticalAngle);
+      this.car.cameraVertical(verticalAngle);
     }
   };
 
   // Full stop!
-  Car.prototype.controlRightBumper = function(button) {
+  Pad.prototype.controlRightBumper = function(button) {
     if (button.pressed) {
         if (!this.state.RBumper.pressed) {
           this.state.RBumper.pressed = button.pressed;
-          this.halt();
+          this.car.halt();
         }
     } else {
       this.state.RBumper.pressed = false;
@@ -159,11 +164,11 @@
   };
 
   // GOTTA GO FAST
-  Car.prototype.controlLeftBumper = function(button) {
+  Pad.prototype.controlLeftBumper = function(button) {
     if (button.pressed) {
         if (!this.state.LBumper.pressed) {
           this.state.LBumper.pressed = button.pressed;
-          this.slower();
+          this.car.slower();
         }
     } else {
       this.state.LBumper.pressed = false;
@@ -171,18 +176,18 @@
   };
 
   // STAPH SONIC GOTTA GO SLOW
-  Car.prototype.controlLeftTrigger = function(button) {
+  Pad.prototype.controlLeftTrigger = function(button) {
     if (button.pressed) {
         if (!this.state.LTrigger.pressed) {
           this.state.LTrigger.pressed = button.pressed;
-          this.faster();
+          this.car.faster();
         }
     } else {
       this.state.LTrigger.pressed = false;
     }
   };
 
-  Car.prototype.controls = function(gamepad) {
+  Pad.prototype.controls = function(gamepad) {
     // axes[0] - left/right left axis
     // axes[1] - top/bottom left axis
     // axes[2] - left/right right axis
@@ -200,12 +205,98 @@
     this.controlLeftTrigger(gamepad.buttons[6]);
   };
 
+
+  function Keyboard(car) {
+    this.car = car;
+    var listener = new window.keypress.Listener();
+    var my_scope = this;
+    var my_combos = listener.register_many([
+      {
+        "keys"           : "up",
+        "is_exclusive"   : true,
+        "prevent_repeat" : "true",
+        "on_keydown"     : function() {
+            this.car.forward();
+        },
+        "on_keyup"       : function(e) {
+            this.car.stop();
+        },
+        "this"           : my_scope
+      },
+      {
+        "keys"           : "down",
+        "is_exclusive"   : true,
+        "prevent_repeat" : "true",
+        "on_keydown"     : function() {
+            this.car.backward();
+        },
+        "on_keyup"       : function(e) {
+            this.car.stop();
+        },
+        "this"           : my_scope
+      },
+      {
+        "keys"           : "left",
+        "is_exclusive"   : true,
+        "prevent_repeat" : "true",
+        "on_keydown"     : function() {
+            this.car.left();
+        },
+        "on_keyup"       : function(e) {
+            this.car.straight();
+        },
+        "this"           : my_scope
+      },
+      {
+        "keys"           : "right",
+        "is_exclusive"   : true,
+        "prevent_repeat" : "true",
+        "on_keydown"     : function() {
+            this.car.right();
+        },
+        "on_keyup"       : function(e) {
+            this.car.straight();
+        },
+        "this"           : my_scope
+      },
+      {
+        "keys"           : "space",
+        "is_exclusive"   : true,
+        "prevent_repeat" : "true",
+        "on_keydown"     : function() {
+            this.car.halt();
+        },
+        "this"           : my_scope
+      },
+      {
+        "keys"           : "x",
+        "is_exclusive"   : true,
+        "prevent_repeat" : "true",
+        "on_keydown"     : function() {
+            this.car.faster();
+        },
+        "this"           : my_scope
+      },
+      {
+        "keys"           : "z",
+        "is_exclusive"   : true,
+        "prevent_repeat" : "true",
+        "on_keydown"     : function() {
+            this.car.slower();
+        },
+        "this"           : my_scope
+      }
+    ]);
+  }
+
+
   function onDOMReady() {
     // CANT TOUCH THIS.
     // It's a retardedVariableTM for cleaning up sockets and RAF on page refresh
     var end = false;
 
     var car = new Car();
+    var pad = new Pad(car);
 
     var canvas = document.getElementById('car-control');
     var ctx = canvas.getContext('2d');
@@ -232,26 +323,30 @@
     function raf(timestamp) {
       if (!end) {
         var gamepad = navigator.getGamepads()[0];
-        car.controls(gamepad);
+        pad.controls(gamepad);
         window.requestAnimationFrame(raf);
       } else {
         window.cancelAnimationFrame();
       }
     }
 
-    function getPad() {
-      setTimeout(function() {
-        var gamepad = navigator.getGamepads()[0];
-        console.log(gamepad);
-        if (!gamepad) {
-          alert("Push any button on the gamepad. If the problem still exist, reconnect the gamepad and restart the browser.");
-          getPad();
-        } else {
-          raf();
-        }
-      }, 10);
+    function chooseControl(retries) {
+      if (retries > 0 ) {
+        setTimeout(function() {
+          var gamepad = navigator.getGamepads()[0];
+          if (gamepad) {
+            raf()
+          }
+          else {
+            chooseControl(retries-1);
+          }
+        }, 100);
+      } else {
+        console.log('Failing back to keyboard control.');
+        var keyboard = new Keyboard(car);
+      }
     }
-    getPad();
+    chooseControl(3);
   }
 
   document.addEventListener('DOMContentLoaded', function() {
