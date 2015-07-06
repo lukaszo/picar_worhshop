@@ -44,9 +44,9 @@
 </div>
 <div class="col-md-6">
   <h2>Dostępne profile</ht>
-  {% if controls %}
+  {% if profiles %}
   <ul>
-    {% for name in controls %}
+    {% for name in profiles %}
     <li>{{ name|e }} <small><a href="{{ url_for('configure', name=name) }}">wybierz</a> <a href="{{ url_for('delete', name=name) }}">usuń</a></li></small>
     {% endfor %}
   </ul>

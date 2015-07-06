@@ -69,8 +69,8 @@ MODULES = {'car' : car_module,
 
 @app.route('/')
 def index():
-    controls = db.get('profiles', {})
-    return render_template('index.html', controls=controls)
+    profiles = db.get('profiles', {})
+    return render_template('index.html', profiles=profiles)
 
 @app.route('/create', methods=['POST'])
 def create():
