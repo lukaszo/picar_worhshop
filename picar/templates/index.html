@@ -47,7 +47,7 @@
   {% if controls %}
   <ul>
     {% for name in controls %}
-    <li>{{ name|e }} <small><a href="{{ url_for('configure', name=name) }}">wybierz</a></li></small>
+    <li>{{ name|e }} <small><a href="{{ url_for('configure', name=name) }}">wybierz</a> <a href="{{ url_for('delete', name=name) }}">usuń</a></li></small>
     {% endfor %}
   </ul>
   {% endif %}

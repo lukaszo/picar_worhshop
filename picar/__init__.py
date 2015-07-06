@@ -23,6 +23,7 @@ db = picar_db.DB()
 
 CAR = None
 FPV = None
+CURRENT = None
 
 
 def car_module(msg):
@@ -73,7 +74,7 @@ def index():
 
 @app.route('/create', methods=['POST'])
 def create():
-    global CAR, FPV
+    global CAR, FPV, CURRENT
     form = dict(request.form)
     name = form['name'][0]
     del form['name']
@@ -81,15 +82,29 @@ def create():
         form[key] = int(form[key][0])
     CAR = car.Car(**get_pins_for_module(car.Car, form))
     FPV = fpv.FPV(**get_pins_for_module(fpv.FPV, form))
+    CURRENT = name
     print('Using configuration: {0}'.format(form))
-    controls = db.get('profiles', {})
-    controls[name] = form
-    db.set('controls', controls)
-    return redirect(url_for('profiles'))
+    profiles = db.get('profiles', {})
+    profiles[name] = form
+    db.set('profiles', profiles)
+    return redirect(url_for('control'))
+
+@app.route('/delete/<name>')
+def delete(name):
+    global CAR, FPV, CURRENT
+    profiles = db.get('profiles')
+    if profiles:
+        profile = profiles.get(name, None)
+        if profile:
+            del profiles[name]
+            db.set('profiles', profiles)
+        if name == CURRENT:
+            CAR = FPV = None
+    return redirect(url_for('index'))
 
 @app.route('/configure/<name>')
 def configure(name):
-    global CAR, FPV
+    global CAR, FPV, CURRENT
     profiles = db.get('profiles')
     if not profiles:
         return redirect(url_for('index'))
@@ -98,6 +113,7 @@ def configure(name):
         return redirect(url_for('index'))
     CAR = car.Car(**get_pins_for_module(car.Car, profile))
     FPV = fpv.FPV(**get_pins_for_module(fpv.FPV, profile))
+    CURRENT = name
     print('Using configuration: {0}'.format(profile))
     return redirect(url_for('control'))
 
