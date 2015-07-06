@@ -11,13 +11,12 @@
   var DEBUG = true;
 
   function Car() {
-    var self = this;
-    self.blackboard = document.getElementById('blackboard');
-    self.ws = new WebSocket("ws://" + document.location.host + "/control-panel");
+    this.blackboard = document.getElementById('blackboard');
+    this.ws = new WebSocket("ws://" + document.location.host + "/control-panel");
     if (DEBUG) {
-      self.ws.addEventListener('message', function(e) {
-        var html = self.blackboard.innerHTML;
-        self.blackboard.innerHTML = html + '<br/>' + e.data;
+      this.ws.addEventListener('message', function(e) {
+        var html = this.blackboard.innerHTML;
+        this.blackboard.innerHTML = html + '<br/>' + e.data;
       });
     }
   }
@@ -74,7 +73,7 @@
 
   function Pad(car) {
     this.car = car;
-    self.state = {
+    this.state = {
       // LX - Left X.
       // LY - Left Y.
       // RX - Right X.
