@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block row %}
+          <div class="col-sm-8 blog-main">
+          <canvas width="500" height="500" id="car-control"></canvas> 
+          </div>
+          <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+            <div class="sidebar-module sidebar-module-inset">
+              <h4>Debug</h4>
+                <div id="blackboard" style="height:256px;background-color:black;color:white;border: solid 1px red;overflow:auto">
+            </div>
+            <div class="sidebar-module">
+            </div>
+          </div><!-- /.blog-sidebar -->
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/vendor/keypress-2.1.0.min.js"></script>
+    <script src="/static/js/vendor/bootstrap-slider.js"></script>
+    <script src="/static/js/vendor/gamecontroller.js"></script>
+    <script src="/static/js/main.js"></script>
+{% endblock %}

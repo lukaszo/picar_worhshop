@@ -1,64 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Hs Car</title>
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/custom.css" rel="stylesheet">
-    <link href="/static/css/bootstrap-slider.min.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-
-  <body>
-
-    <div class="blog-masthead">
-      <div class="container">
-        <nav class="blog-nav">
-          <a class="blog-nav-item active" href="#">Home</a>
-          <a class="blog-nav-item" href="#">About</a>
-        </nav>
-      </div>
+{% extends "base.html" %}
+{% block row %}
+<div class="col-md-6">
+  <h2>Nowy Proil</h2>
+  <form action="{{ url_for('create') }}" method="post">
+    <div class="form-group">
+      <label for="name">Profil</label>
+      <input type="text" class="form-control" id="name" name="name" placeholder="Nazwa profilu">
     </div>
-
-    <div class="container">
-
-        <div class="blog-header">
-          <h1 class="blog-title">HS Car</h1>
-        </div>
-
-        <div class="row">
-
-          <div class="col-sm-8 blog-main">
-          
-
-          <canvas width="500" height="500" id="car-control"></canvas> 
-          </div><!-- /.blog-main -->
-
-          <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
-            <div class="sidebar-module sidebar-module-inset">
-              <h4>Debug</h4>
-                <div id="blackboard" style="height:256px;background-color:black;color:white;border: solid 1px red;overflow:auto">
-            </div>
-            <div class="sidebar-module">
-            </div>
-          </div><!-- /.blog-sidebar -->
-
-        </div><!-- /.row -->
-
-      </div><!-- /.container -->
+    <div class="form-group">
+      <label for="left_pin">Pin "w lewo"</label>
+      <input type="text" class="form-control" id="left_pin" name="left_pin" placeholder="nr pinu">
     </div>
-
-    <footer class="blog-footer">
-    <p>Created for <a href="http://hs-silesia.pl">Hackerspace Silesia</a> by <a href="https://twitter.com/lukas_oles">Łukasz Oleś</a></p>
-    </footer>
-    <script src="/static/js/vendor/keypress-2.1.0.min.js"></script>
-    <script src="/static/js/vendor/bootstrap-slider.js"></script>
-    <script src="/static/js/vendor/gamecontroller.js"></script>
-    <script src="/static/js/main.js"></script>
-  </body>
-</html>
+    <div class="form-group">
+      <label for="right_pin">Pin "w prawo"</label>
+      <input type="text" class="form-control" id="right_pin" name="right_pin" placeholder="nr pinu">
+    </div>
+    <div class="form-group">
+      <label for="forward_pin">Pin "do przodu"</label>
+      <input type="text" class="form-control" id="forward_pin" name="forward_pin" placeholder="nr pinu">
+    </div>
+    <div class="form-group">
+      <label for="backward_pin">Pin "do tyłu"</label>
+      <input type="text" class="form-control" id="backward_pin" name="backward_pin" placeholder="nr pinu">
+    </div>
+    <div class="form-group">
+      <label for="enable_moving">Pin "prędkość"</label>
+      <input type="text" class="form-control" id="enable_moving" name="enable_moving" placeholder="nr pinu">
+    </div>
+    <div class="form-group">
+      <label for="enable_turning">Pin "skręcanie"</label>
+      <input type="text" class="form-control" id="enable_turning" name="enable_turning" placeholder="nr pinu">
+    </div>
+    <div class="form-group">
+      <label for="vertical_pin">Pin "kamera góra"</label>
+      <input type="text" class="form-control" id="vertical_pin" name="vertical_pin" placeholder="nr pinu">
+    </div>
+    <div class="form-group">
+      <label for="horizontal_pin">Pin "kamera bok"</label>
+      <input type="text" class="form-control" id="horizontal_pin" name="horizontal_pin" placeholder="nr pinu">
+    </div>
+    <button type="submit" class="btn btn-default">Zapisz</button>
+  </form>
+</div>
+<div class="col-md-6">
+  <h2>Dostępne profile</ht>
+  {% if controls %}
+  <ul>
+    {% for name in controls %}
+    <li>{{ name|e }} <small><a href="{{ url_for('configure', name=name) }}">wybierz</a></li></small>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endblock %}
