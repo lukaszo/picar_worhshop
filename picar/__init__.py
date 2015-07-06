@@ -101,6 +101,16 @@ def delete(name):
         CAR = FPV = None
     return redirect(url_for('index'))
 
+@app.route('/edit/<name>')
+def edit(name):
+    profiles = db.get('profiles', {})
+    profile = profiles.get(name, None)
+    if profile:
+        profile['name'] = name
+        return render_template('index.html', profiles=profiles, edit=profile)
+    return redirect(url_for('index'))
+
+
 @app.route('/configure/<name>')
 def configure(name):
     global CAR, FPV, CURRENT

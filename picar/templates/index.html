@@ -5,39 +5,39 @@
   <form action="{{ url_for('create') }}" method="post">
     <div class="form-group">
       <label for="name">Profil</label>
-      <input type="text" class="form-control" id="name" name="name" placeholder="Nazwa profilu">
+      <input type="text" class="form-control" id="name" name="name" placeholder="Nazwa profilu" {% if edit %} value="{{edit['name']}}" {% endif %}>
     </div>
     <div class="form-group">
       <label for="left_pin">Pin "w lewo"</label>
-      <input type="text" class="form-control" id="left_pin" name="left_pin" placeholder="nr pinu">
+      <input type="text" class="form-control" id="left_pin" name="left_pin" placeholder="nr pinu" {% if edit %} value="{{edit['left_pin']}}" {% endif %}>
     </div>
     <div class="form-group">
       <label for="right_pin">Pin "w prawo"</label>
-      <input type="text" class="form-control" id="right_pin" name="right_pin" placeholder="nr pinu">
+      <input type="text" class="form-control" id="right_pin" name="right_pin" placeholder="nr pinu" {% if edit %} value="{{edit['right_pin']}}" {% endif %}>
     </div>
     <div class="form-group">
       <label for="forward_pin">Pin "do przodu"</label>
-      <input type="text" class="form-control" id="forward_pin" name="forward_pin" placeholder="nr pinu">
+      <input type="text" class="form-control" id="forward_pin" name="forward_pin" placeholder="nr pinu" {% if edit %} value="{{edit['forward_pin']}}" {% endif %}>
     </div>
     <div class="form-group">
       <label for="backward_pin">Pin "do tyłu"</label>
-      <input type="text" class="form-control" id="backward_pin" name="backward_pin" placeholder="nr pinu">
+      <input type="text" class="form-control" id="backward_pin" name="backward_pin" placeholder="nr pinu" {% if edit %} value="{{edit['backward_pin']}}" {% endif %}>
     </div>
     <div class="form-group">
       <label for="enable_moving">Pin "prędkość"</label>
-      <input type="text" class="form-control" id="enable_moving" name="enable_moving" placeholder="nr pinu">
+      <input type="text" class="form-control" id="enable_moving" name="enable_moving" placeholder="nr pinu" {% if edit %} value="{{edit['enable_moving']}}" {% endif %}>
     </div>
     <div class="form-group">
       <label for="enable_turning">Pin "skręcanie"</label>
-      <input type="text" class="form-control" id="enable_turning" name="enable_turning" placeholder="nr pinu">
+      <input type="text" class="form-control" id="enable_turning" name="enable_turning" placeholder="nr pinu" {% if edit %} value="{{edit['enable_turning']}}" {% endif %}>
     </div>
     <div class="form-group">
       <label for="vertical_pin">Pin "kamera góra"</label>
-      <input type="text" class="form-control" id="vertical_pin" name="vertical_pin" placeholder="nr pinu">
+      <input type="text" class="form-control" id="vertical_pin" name="vertical_pin" placeholder="nr pinu" {% if edit %} value="{{edit['vertical_pin']}}" {% endif %}>
     </div>
     <div class="form-group">
       <label for="horizontal_pin">Pin "kamera bok"</label>
-      <input type="text" class="form-control" id="horizontal_pin" name="horizontal_pin" placeholder="nr pinu">
+      <input type="text" class="form-control" id="horizontal_pin" name="horizontal_pin" placeholder="nr pinu" {% if edit %} value="{{edit['horizontal_pin']}}" {% endif %}>
     </div>
     <button type="submit" class="btn btn-default">Zapisz</button>
   </form>
@@ -47,7 +47,7 @@
   {% if profiles %}
   <ul>
     {% for name in profiles %}
-    <li>{{ name|e }} <small><a href="{{ url_for('configure', name=name) }}">wybierz</a> <a href="{{ url_for('delete', name=name) }}">usuń</a></li></small>
+    <li>{{ name|e }} <small><a href="{{ url_for('configure', name=name) }}">wybierz</a>  <a href="{{ url_for('edit', name=name) }}">edytuj</a> <a href="{{ url_for('delete', name=name) }}">usuń</a></li></small>
     {% endfor %}
   </ul>
   {% endif %}
