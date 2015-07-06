@@ -3,6 +3,9 @@ import pigpio
 
 
 class Car(object):
+    PINS = ['left_pin', 'right_pin', 'forward_pin', 'backward_pin',
+            'enable_moving', 'enable_turning']
+
     def __init__(self, left_pin, right_pin, forward_pin, backward_pin,
                  enable_moving, enable_turning, start_power=65):
         self._left_pin = left_pin

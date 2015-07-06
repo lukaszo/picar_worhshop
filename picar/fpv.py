@@ -3,6 +3,8 @@ import pigpio
 
 
 class FPV(object):
+    PINS = ['horizontal_pin', 'vertical_pin']
+
     def __init__(self, horizontal_pin, vertical_pin):
         self._horizontal_pin = horizontal_pin
         self._vertical_pin = vertical_pin
