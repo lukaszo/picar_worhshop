@@ -92,14 +92,13 @@ def create():
 @app.route('/delete/<name>')
 def delete(name):
     global CAR, FPV, CURRENT
-    profiles = db.get('profiles')
-    if profiles:
-        profile = profiles.get(name, None)
-        if profile:
-            del profiles[name]
-            db.set('profiles', profiles)
-        if name == CURRENT:
-            CAR = FPV = None
+    profiles = db.get('profiles', {})
+    profile = profiles.get(name, None)
+    if profile:
+        del profiles[name]
+        db.set('profiles', profiles)
+    if name == CURRENT:
+        CAR = FPV = None
     return redirect(url_for('index'))
 
 @app.route('/configure/<name>')
