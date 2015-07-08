@@ -31,6 +31,7 @@ class Car(object):
         self._pi.set_mode(self._enable_moving, pigpio.OUTPUT)
         self._pi.set_mode(self._enable_turning, pigpio.OUTPUT)
 
+        self._pi.set_PWM_range(self._enable_moving, 100)
         self._pi.set_PWM_frequency(self._enable_moving, 100) # channel, frequency
 
     def turn_left(self):
