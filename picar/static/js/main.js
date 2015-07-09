@@ -9,6 +9,7 @@
   var AXIS_MIN = -1;
 
   var DEBUG = true;
+  var NO_CAMERA = false;
 
   function Car() {
     this.blackboard = document.getElementById('blackboard');
@@ -306,12 +307,12 @@
     });
 
     setInterval(function() {
-      if (DEBUG) {
+      if (NO_CAMERA) {
         img.src = 'http://lorempixel.com/400/200/?' + new Date().getTime();
       } else {
         img.src = 'http://' + window.location.hostname + "/cam_pic.php?time=" + new Date().getTime();
       }
-    }, 1000);
+    }, 100);
 
     window.onbeforeunload = function() {
       end = true;
