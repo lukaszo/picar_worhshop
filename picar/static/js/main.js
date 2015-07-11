@@ -9,7 +9,7 @@
   var AXIS_MIN = -1;
 
   var DEBUG = true;
-  var NO_CAMERA = false;
+  var NO_CAMERA = true;
 
   function Car() {
     this.blackboard = document.getElementById('blackboard');
@@ -289,6 +289,38 @@
     ]);
   }
 
+  function VoiceControl(car) {
+    var annyang = window.annyang;
+    this.car = car;
+    if (annyang) {
+      annyang.setLanguage("pl");
+      // Let's define a command.
+      var commands = {
+        "przód": this.car.forward(),
+        "do przodu": this.car.forward(),
+        "do tyłu": this.car.backward(),
+        "tył": this.car.backward(),
+        "prosto": this.car.straight(),
+        "lewo": this.car.left(),
+        "prawo": this.car.right(),
+        // Welp.
+        // "stop": this.car.stop(),
+        "stop": this.car.halt(),
+        "szybciej": this.car.faster(),
+        "wolniej": this.car.slower()
+      };
+
+      if (DEBUG) {
+        annyang.debug(true);
+      }
+      // Add our commands to annyang
+      annyang.addCommands(commands);
+
+      // Start listening.
+      annyang.start();
+    }
+  }
+
 
   function onDOMReady() {
     // CANT TOUCH THIS.
@@ -354,7 +386,8 @@
         }, 100);
       } else {
         console.log('Failing back to keyboard control.');
-        var keyboard = new Keyboard(car);
+        car.keyboard = new Keyboard(car);
+        car.voice = new VoiceCntrol(car);
       }
     }
     chooseControl(3);
