@@ -314,6 +314,17 @@
       }
     }, 100);
 
+    var vertical_slider = new Slider("#vertical");
+    var horizontal_slider = new Slider("#horizontal");
+  
+    vertical_slider.on("change", function(values) {
+      car.cameraVertical(values.newValue);
+    });
+
+    horizontal_slider.on("change", function(values) {
+      car.cameraHorizontal(values.newValue);
+    });
+
     window.onbeforeunload = function() {
       end = true;
       car.ws.onclose = function() {}; // disable onclose handler first

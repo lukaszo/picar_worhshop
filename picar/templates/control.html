@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block row %}
           <div class="col-sm-8 blog-main">
-          <canvas width="500" height="500" id="car-control"></canvas> 
+          <canvas width="512" height="288" id="car-control"></canvas> 
+          <input id="vertical" type="text" data-slider-min="0" data-slider-max="180" data-slider-step="10" data-slider-value="90" data-slider-orientation="vertical"/>
+          <input id="horizontal" type="text" data-slider-min="0" data-slider-max="180" data-slider-step="10" data-slider-value="90"/>
           </div>
           <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
             <div class="sidebar-module sidebar-module-inset">
