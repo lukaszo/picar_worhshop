@@ -105,8 +105,9 @@ EOL
 update-rc.d hostapd enable
 update-rc.d udhcpd enable
 
+cp /etc/rc.local /tmp/rc.local
 cat >/etc/rc.local <<EOL
-`cat /etc/rc.local | grep -v "exit 0"`
+`cat /tmp/rc.local | grep -v "exit 0"`
 
 /usr/local/bin/pigpiod
 FLASK_UWSGI_DEBUG=true /usr/local/bin/uwsgi --http 0.0.0.0:8080 --http-websockets --processes 1 --master  --wsgi picar:app --daemonize /tmp/picar.log
