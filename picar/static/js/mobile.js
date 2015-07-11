@@ -292,6 +292,9 @@
   function MobileControl(car) {
     var self = this;
     this.car = car;
+    this.verticalCamera = 90;
+    this.horizontalCamera = 90;
+
     GameController.init({
       left: {
         type: 'dpad',
@@ -346,13 +349,38 @@
           bottom: '15%'
         },
         dpad: {
-          touchMove: function (details) {
+          up: {
+            touchMove: function (details) {
+              if(self.verticalCamera<180){
+                self.verticalCamera += 1;       
+                self.car.cameraVertical(self.verticalCamera);
 
-            console.log(details.dx);
-            console.log(details.dy);
-            console.log(details.max);
-            console.log(details.normalizedX);
-            console.log(details.normalizedY);
+              }
+            },
+          },
+          left: {
+            touchMove: function (details) {
+              if(self.horizontalCamera>0){
+                self.verticalCamera -= 1;
+                self.car.cameraHorizontal(self.horizontalCamera);
+              }
+            },
+          },
+          right: {
+            touchMove: function (details) {
+              if(self.horizontalCamera<180){
+                self.horizontalCamera += 1; 
+                self.car.cameraHorizontal(self.horizontalCamera);
+              }
+            },
+          },
+          down: {
+            touchMove: function (details) {
+              if(self.verticalCamera>0){
+                self.verticalCamera -= 1;                
+                self.car.cameraVertical(self.verticalCamera);
+              }
+            },
           }
         }
       }
@@ -373,7 +401,7 @@
     var canvas = document.getElementById('car-control');
 
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.height = window.innerHeight-200;
     var ctx = canvas.getContext('2d');
     var img = new Image();
 
@@ -386,7 +414,7 @@
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.height = window.innerHeight-200;
       ctx = canvas.getContext('2d');
 
       /**
