@@ -5,7 +5,7 @@ sudo -i <<SUDO
 
 # preapare
 apt-get update
-apt-get dist-upgrade
+apt-get -y  dist-upgrade
 
 # install RPi_Cam_Web_Interface
 cd /home/pi
@@ -16,7 +16,7 @@ chmod u+x RPi_Cam_Web_Interface_Installer.sh
 
 # install picar
 cd -
-sudo apt-get install python-pip python-dev
+sudo apt-get -y install python-pip python-dev
 pip install -r requirements.txt
 pip install -e .
 
@@ -32,7 +32,7 @@ make install
 ###########
 # hotspot #
 ###########
-apt-get install hostapd udhcpd
+apt-get -y install hostapd udhcpd
 cat > /etc/udhcpd.conf <<EOL
 start 192.168.40.2
 end 192.168.40.20
